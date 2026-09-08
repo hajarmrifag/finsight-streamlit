@@ -10,6 +10,8 @@ FinSight brings the results of my [churn and reactivation research](https://gith
 
 **[Open the live app](https://finsight-ai-hajar.streamlit.app/)** · Built by [Hajar Mrifag](https://github.com/hajarmrifag)
 
+![FinSight AI overview](docs/finsight-overview.png)
+
 ## What you can explore
 
 - **Overview:** model performance, monthly cohorts, and differences in transaction behavior between higher-risk accounts and the rest of the cohort.
