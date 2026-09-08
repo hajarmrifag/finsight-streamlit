@@ -39,7 +39,7 @@ The analysis uses the historical [Berka / PKDD 1999 Financial dataset](https://r
 
 The app reads saved aggregate results from the research pipeline. It does not train the risk model or score new customers. This repository contains no account-level records or fitted risk model.
 
-The reported metrics reproduce the original model evaluation. Adjacent 90-day outcome windows overlap temporal split boundaries; a purged temporal evaluation remains a useful follow-up. Campaign outputs depend on the assumptions entered in the calculator—the research does not measure the effect of a retention intervention.
+The reported metrics reproduce the original model evaluation. A stricter purged temporal robustness check was also run to remove training observations whose 90-day outcome windows crossed into evaluation periods; the purged locked test retained ROC-AUC 0.9202 and top-10% lift 6.63x. Campaign outputs depend on the assumptions entered in the calculator; the research does not measure the effect of a retention intervention.
 
 ## Run locally
 

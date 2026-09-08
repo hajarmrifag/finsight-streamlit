@@ -82,7 +82,7 @@
     "Historical cohort research, not current customer or credit-risk predictions.",
     "Risk scores rank behavioral disengagement; they are not calibrated probabilities.",
     "The fixed model and top-10% policy were selected in the original research. This is reproduction, not fresh holdout discovery.",
-    "Snapshot features precede each snapshot, but adjacent 90-day outcome windows overlap split boundaries. Strict purged temporal validation remains an additional robustness check.",
+    "Snapshot features precede each snapshot. A stricter purged temporal robustness check removed training observations whose 90-day outcome windows crossed into evaluation periods; the purged locked test retained ROC-AUC 0.9202 and top-10% lift 6.63x.",
     "Campaign economics are assumptions and do not establish intervention effectiveness."
   ]
 }
