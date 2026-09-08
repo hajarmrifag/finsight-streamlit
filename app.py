@@ -13,7 +13,37 @@ import streamlit as st
 from core import campaign, semantic_search, word_search
 
 ROOT = Path(__file__).resolve().parent
-st.set_page_config(page_title='FinSight AI', page_icon='📊', layout='wide', menu_items={'About':'FinSight AI — historical banking disengagement research by Hajar Mrifag.'})
+st.set_page_config(page_title='FinSight AI', page_icon='◒', layout='wide', menu_items={'About':'FinSight AI — historical banking disengagement research by Hajar Mrifag.'})
+
+
+st.markdown("""
+<style>
+.stApp { background: #f6f2eb; color: #202b38; }
+[data-testid="stHeader"] { background: #f6f2ebee; }
+[data-testid="stSidebar"] { background: #202b38; border-right: 0; }
+[data-testid="stSidebar"] * { color: #f6f2eb; }
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] { color: #b9b6af; }
+[data-testid="stSidebar"] button { background: transparent; border: 1px solid #74808b; }
+[data-testid="stSidebar"] [role="radiogroup"] { gap: .8rem; margin: 2rem 0; }
+.block-container { max-width: 1240px; padding-top: 3.5rem; padding-bottom: 4rem; }
+h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif !important; font-weight: 400 !important; letter-spacing: -.035em; }
+h1 { font-size: clamp(2.6rem, 5vw, 4.6rem) !important; line-height: 1.06 !important; max-width: 850px; }
+h3 { font-size: 1.8rem !important; margin-top: 1.5rem !important; }
+.kicker { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: #a94e32; margin-bottom: 1.2rem; font-weight: 700; }
+.masthead { font-family: Georgia, serif; font-size: 2.7rem; letter-spacing: -.07em; padding-top: 1rem; }
+.edition { border-top: 1px solid #b8b0a4; border-bottom: 1px solid #b8b0a4; padding: .65rem 0; margin: 1.4rem 0 2rem; font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+[data-testid="stMetric"] { border-top: 2px solid #a94e32; padding: 1.1rem .2rem 1.5rem; }
+[data-testid="stMetricValue"] { font-family: Georgia, serif; font-size: 2.7rem; }
+[data-testid="stMetricLabel"] { color: #626972; font-size: .8rem; }
+[data-testid="stForm"] { background: #ece6dc; border: 0; border-radius: 2px; padding: 1.5rem; }
+.stButton button, .stDownloadButton button, .stFormSubmitButton button { border-radius: 2px; min-height: 2.8rem; }
+.stFormSubmitButton button { background: #a94e32; color: white; border-color: #a94e32; }
+[data-testid="stAlert"] { border-radius: 2px; }
+[data-testid="stDataFrame"] { border-top: 1px solid #b8b0a4; }
+[data-testid="stCaptionContainer"] { color: #626972; }
+@media(max-width: 640px) { .block-container { padding-top: 4rem; } [data-testid="stMetricValue"] { font-size: 2rem; } }
+</style>
+""", unsafe_allow_html=True)
 
 
 @st.cache_data
@@ -53,19 +83,21 @@ except (OSError, ValueError):
     st.stop()
 
 with st.sidebar:
-    st.title('FinSight AI')
-    st.caption('Banking research workspace')
+    st.markdown('<div class="masthead">FinSight.</div>', unsafe_allow_html=True)
+    st.caption('RESEARCH BY HAJAR MRIFAG')
     page = st.radio('Explore', ['Overview', 'Evidence analyst', 'Campaign scenario', 'Methodology'], key='page')
     st.divider()
-    st.caption('By Hajar Mrifag · Historical research')
+    st.caption('BERKA BANKING STUDY / 1998')
     st.download_button('Download aggregate report', json.dumps(report, indent=2), file_name='finsight-research.json', mime='application/json')
 
-st.title(page if page != 'Overview' else 'Customer disengagement, measured.')
-st.caption('Historical Berka banking data · reproduced model results · transparent assumptions')
+st.markdown('<div class="kicker">FinSight / Banking research</div>', unsafe_allow_html=True)
+st.title(page if page != 'Overview' else 'Before an account goes quiet.')
+st.markdown('<div class="edition"><span>Customer activity & retention</span><span>Historical study · July–September 1998</span></div>', unsafe_allow_html=True)
 e = report['evaluation']
 
 if page == 'Overview':
-    st.info('This model ranks declining activity in historical accounts. It does not predict creditworthiness or establish that retention campaigns work.')
+    st.write('A study of declining transaction activity: which accounts show the strongest signs of disengagement, and what would it take for a retention campaign to pay off?')
+    st.caption('Historical activity rankings. These results do not measure creditworthiness or prove campaign effectiveness.')
     for column, label, value, help_text in zip(st.columns(4),
         ['Holdout ROC-AUC','Cases captured','Top-10% lift','Latest high-risk accounts'],
         [f"{e['roc_auc']:.4f}",f"{e['recall']:.2%}",f"{e['lift']:.2f}×",f"{report['high_risk_accounts']:,}"],
@@ -77,7 +109,7 @@ if page == 'Overview':
     chart = months.set_index('Snapshot')[['Observed disengagement rate']].mul(100)
     st.line_chart(chart, y_label='Observed disengagement (%)')
     st.caption('Accounts repeat across months. High risk is the top 10% within each monthly cohort; holdout metrics rank all test account-month observations together.')
-    st.subheader('Who is in the high-risk group?')
+    st.subheader('The behavior behind the ranking')
     st.caption(f"{report['latest_snapshot']} · group medians; balances in source currency")
     profile = pd.DataFrame(report['profile']).rename(columns={'feature':'Behavior','high_risk_median':'High-risk median','other_median':'Other accounts median'})
     profile['Behavior'] = profile['Behavior'].str.replace('_',' ').str.replace('90d','(90 days)').str.replace('30d','(30 days)')
