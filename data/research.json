@@ -1,0 +1,88 @@
+{
+  "model": "Histogram Gradient Boosting",
+  "model_status": "trained",
+  "dataset": "Berka / PKDD 1999 historical anonymized banking data",
+  "source_url": "https://relational.fel.cvut.cz/dataset/Financial",
+  "dataset_sha256": "b8087e5f12951ab0ce95458e3632f8d9c2c1ca07c2282377bb3b90745435e6b1",
+  "research_origin": "churn-reactivation-engine",
+  "training_rows": 69789,
+  "feature_count": 100,
+  "development_period": [
+    "1997-01-01",
+    "1998-06-01"
+  ],
+  "test_period": [
+    "1998-07-01",
+    "1998-09-01"
+  ],
+  "evaluation": {
+    "rows": 13177,
+    "positives": 199,
+    "prevalence": 0.015102071791758367,
+    "roc_auc": 0.9226948426831336,
+    "pr_auc": 0.19825426837671525,
+    "targeted_rows": 1318,
+    "positives_captured": 141,
+    "precision": 0.10698027314112292,
+    "recall": 0.7085427135678392,
+    "lift": 7.083814367741591
+  },
+  "latest_snapshot": "1998-09-01",
+  "latest_accounts": 4393,
+  "high_risk_accounts": 440,
+  "profile": [
+    {
+      "feature": "cash_withdrawals_90d",
+      "high_risk_median": 9.0,
+      "other_median": 6.0
+    },
+    {
+      "feature": "unique_operations_90d",
+      "high_risk_median": 2.0,
+      "other_median": 3.0
+    },
+    {
+      "feature": "balance_change_30d",
+      "high_risk_median": -3164.0,
+      "other_median": 1222.3999999999978
+    },
+    {
+      "feature": "outgoing_transfers_30d",
+      "high_risk_median": 0.0,
+      "other_median": 1.0
+    },
+    {
+      "feature": "cash_deposits_90d",
+      "high_risk_median": 2.0,
+      "other_median": 3.0
+    }
+  ],
+  "months": [
+    {
+      "snapshot": "1998-07-01",
+      "accounts": 4391,
+      "high_risk": 440,
+      "observed_disengagement_rate": 0.018446823047141882
+    },
+    {
+      "snapshot": "1998-08-01",
+      "accounts": 4393,
+      "high_risk": 440,
+      "observed_disengagement_rate": 0.013430457546096062
+    },
+    {
+      "snapshot": "1998-09-01",
+      "accounts": 4393,
+      "high_risk": 440,
+      "observed_disengagement_rate": 0.013430457546096062
+    }
+  ],
+  "target_definition": "Next-90-day customer activity at or below 60% of the same-snapshot median future/past activity ratio; eligible accounts have at least four previous-90-day customer-initiated transactions.",
+  "limitations": [
+    "Historical cohort research, not current customer or credit-risk predictions.",
+    "Risk scores rank behavioral disengagement; they are not calibrated probabilities.",
+    "The fixed model and top-10% policy were selected in the original research. This is reproduction, not fresh holdout discovery.",
+    "Snapshot features precede each snapshot, but adjacent 90-day outcome windows overlap split boundaries. Strict purged temporal validation remains an additional robustness check.",
+    "Campaign economics are assumptions and do not establish intervention effectiveness."
+  ]
+}
