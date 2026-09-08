@@ -1,5 +1,7 @@
 # FinSight AI
 
+[![tests](https://github.com/hajarmrifag/finsight-streamlit/actions/workflows/tests.yml/badge.svg)](https://github.com/hajarmrifag/finsight-streamlit/actions/workflows/tests.yml)
+
 ### Banking customer disengagement research
 
 Which accounts show signs of declining activity, and when would contacting those customers be worth the cost?
