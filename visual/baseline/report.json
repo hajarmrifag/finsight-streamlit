@@ -1,0 +1,95 @@
+{
+  "desktop-overview": {
+    "horizontal_overflow": false,
+    "content_height": 1749,
+    "exceptions": 0,
+    "load_seconds": 1.67
+  },
+  "desktop-evidence": {
+    "horizontal_overflow": false,
+    "content_height": 900,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "desktop-evidence-answer": {
+    "horizontal_overflow": false,
+    "content_height": 1116,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "desktop-campaign": {
+    "horizontal_overflow": false,
+    "content_height": 1045,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "desktop-methodology": {
+    "horizontal_overflow": false,
+    "content_height": 1300,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "desktop-console_errors": [],
+  "tablet-overview": {
+    "horizontal_overflow": false,
+    "content_height": 1734,
+    "exceptions": 0,
+    "load_seconds": 1.05
+  },
+  "tablet-evidence": {
+    "horizontal_overflow": false,
+    "content_height": 1180,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "tablet-evidence-answer": {
+    "horizontal_overflow": false,
+    "content_height": 1180,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "tablet-campaign": {
+    "horizontal_overflow": false,
+    "content_height": 1180,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "tablet-methodology": {
+    "horizontal_overflow": false,
+    "content_height": 1495,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "tablet-console_errors": [],
+  "mobile-overview": {
+    "horizontal_overflow": false,
+    "content_height": 2276,
+    "exceptions": 0,
+    "load_seconds": 1.03
+  },
+  "mobile-evidence": {
+    "horizontal_overflow": false,
+    "content_height": 1056,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "mobile-evidence-answer": {
+    "horizontal_overflow": false,
+    "content_height": 1455,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "mobile-campaign": {
+    "horizontal_overflow": false,
+    "content_height": 1716,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "mobile-methodology": {
+    "horizontal_overflow": false,
+    "content_height": 1742,
+    "exceptions": 0,
+    "load_seconds": null
+  },
+  "mobile-console_errors": []
+}
