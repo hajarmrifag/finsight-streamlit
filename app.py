@@ -11,9 +11,10 @@ os.environ.setdefault('HF_HUB_DOWNLOAD_TIMEOUT', '15')
 import pandas as pd
 import streamlit as st
 from core import campaign, semantic_search, word_search
+from research import load_report
 
 ROOT = Path(__file__).resolve().parent
-st.set_page_config(page_title='FinSight AI', page_icon='◒', layout='wide', menu_items={'About':'FinSight AI — historical banking disengagement research by Hajar Mrifag.'})
+st.set_page_config(page_title='FinSight AI', page_icon='◒', layout='wide', menu_items={'About':'FinSight AI: historical banking disengagement research by Hajar Mrifag.'})
 
 
 st.markdown("""
@@ -48,7 +49,7 @@ h3 { font-size: 1.8rem !important; margin-top: 1.5rem !important; }
 
 @st.cache_data
 def load_data():
-    report = json.loads((ROOT/'data/research.json').read_text())
+    report = load_report(ROOT/'data/research.json')
     knowledge = json.loads((ROOT/'data/knowledge.json').read_text())
     return report, knowledge
 
@@ -93,7 +94,7 @@ with st.sidebar:
 st.markdown('<div class="kicker">FinSight / Banking research</div>', unsafe_allow_html=True)
 st.title(page if page != 'Overview' else 'Before an account goes quiet.')
 st.markdown('<div class="edition"><span>Customer activity & retention</span><span>Historical study · July–September 1998</span></div>', unsafe_allow_html=True)
-e = report['evaluation']
+e = next(item for item in report['evaluations'] if item['id'] == 'original_test')
 
 if page == 'Overview':
     st.write('A study of declining transaction activity: which accounts show the strongest signs of disengagement, and what would it take for a retention campaign to pay off?')
@@ -111,7 +112,7 @@ if page == 'Overview':
     st.caption('Accounts repeat across months. High risk is the top 10% within each monthly cohort; holdout metrics rank all test account-month observations together.')
     st.subheader('The behavior behind the ranking')
     st.caption(f"{report['latest_snapshot']} · group medians; balances in source currency")
-    profile = pd.DataFrame(report['profile']).rename(columns={'feature':'Behavior','high_risk_median':'High-risk median','other_median':'Other accounts median'})
+    profile = pd.DataFrame(report['latest_snapshot_profile']).rename(columns={'feature':'Behavior','high_risk_median':'High-risk median','other_median':'Other accounts median'})
     profile['Behavior'] = profile['Behavior'].str.replace('_',' ').str.replace('90d','(90 days)').str.replace('30d','(30 days)')
     st.dataframe(profile, hide_index=True, width='stretch')
     st.caption('Group differences are associations, not causal explanations or individual feature attributions.')
@@ -140,7 +141,7 @@ elif page == 'Evidence analyst':
                     mode = 'Semantic search'
                 except (OSError, ValueError, RuntimeError, ImportError):
                     matches = word_search(question, knowledge)
-                    mode = 'Word matching — semantic model unavailable'
+                    mode = 'Word matching: semantic model unavailable'
             else:
                 matches = word_search(question, knowledge)
             st.session_state['answer'] = (matches, mode)
@@ -170,7 +171,7 @@ elif page == 'Campaign scenario':
 
 else:
     st.subheader('Model card')
-    st.write(f"{report['model']} trained on {report['training_rows']:,} development observations with {report['feature_count']} features.")
+    st.write(f"{report['model']} trained on {e['training_rows']:,} development observations with {report['feature_count']} features.")
     st.write('Development: ' + ' to '.join(report['development_period']))
     st.write('Holdout: ' + ' to '.join(report['test_period']))
     st.subheader('Target definition')

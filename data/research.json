@@ -1,11 +1,11 @@
 {
+  "schema_version": 2,
   "model": "Histogram Gradient Boosting",
   "model_status": "trained",
   "dataset": "Berka / PKDD 1999 historical anonymized banking data",
   "source_url": "https://relational.fel.cvut.cz/dataset/Financial",
   "dataset_sha256": "b8087e5f12951ab0ce95458e3632f8d9c2c1ca07c2282377bb3b90745435e6b1",
   "research_origin": "churn-reactivation-engine",
-  "training_rows": 69789,
   "feature_count": 100,
   "development_period": [
     "1997-01-01",
@@ -15,22 +15,141 @@
     "1998-07-01",
     "1998-09-01"
   ],
-  "evaluation": {
-    "rows": 13177,
-    "positives": 199,
-    "prevalence": 0.015102071791758367,
-    "roc_auc": 0.9226948426831336,
-    "pr_auc": 0.19825426837671525,
-    "targeted_rows": 1318,
-    "positives_captured": 141,
-    "precision": 0.10698027314112292,
-    "recall": 0.7085427135678392,
-    "lift": 7.083814367741591
+  "protocols": {
+    "original": "Training uses every snapshot before the evaluation period. The last training snapshots have 90-day outcome windows that extend into the evaluation period.",
+    "purged_temporal": "Training snapshots whose 90-day outcome window extends into the evaluation period are removed before fitting, so no training outcome overlaps evaluation."
   },
+  "splits": [
+    {
+      "name": "train",
+      "period": [
+        "1997-01-01",
+        "1997-12-01"
+      ],
+      "rows": 43959,
+      "positives": 1131
+    },
+    {
+      "name": "validation",
+      "period": [
+        "1998-01-01",
+        "1998-06-01"
+      ],
+      "rows": 25830,
+      "positives": 737
+    },
+    {
+      "name": "test",
+      "period": [
+        "1998-07-01",
+        "1998-09-01"
+      ],
+      "rows": 13177,
+      "positives": 199
+    }
+  ],
+  "evaluations": [
+    {
+      "id": "original_test",
+      "protocol": "original",
+      "split": "test",
+      "evaluation_period": [
+        "1998-07-01",
+        "1998-09-01"
+      ],
+      "training_rows": 69789,
+      "last_training_snapshot": "1998-06-01",
+      "rows": 13177,
+      "positives": 199,
+      "roc_auc": 0.9226948426831336,
+      "pr_auc": 0.19825426837671525,
+      "targeted_fraction": 0.1,
+      "targeted_rows": 1318,
+      "positives_captured": 141,
+      "precision": 0.10698027314112292,
+      "recall": 0.7085427135678392,
+      "lift": 7.083814367741591,
+      "values_rounded": false,
+      "derived_fields": [],
+      "source": "churn-reactivation-engine: src/evaluate_test.py; reproduced in the FinSight research artifacts at full precision"
+    },
+    {
+      "id": "purged_test",
+      "protocol": "purged_temporal",
+      "split": "test",
+      "evaluation_period": [
+        "1998-07-01",
+        "1998-09-01"
+      ],
+      "training_rows": 61045,
+      "last_training_snapshot": "1998-04-01",
+      "rows": 13177,
+      "positives": 199,
+      "roc_auc": 0.9202,
+      "pr_auc": 0.1779,
+      "targeted_fraction": 0.1,
+      "targeted_rows": 1318,
+      "positives_captured": 132,
+      "precision": 0.1002,
+      "recall": 0.6633,
+      "lift": 6.63,
+      "values_rounded": true,
+      "derived_fields": [
+        "targeted_rows"
+      ],
+      "source": "churn-reactivation-engine: src/evaluate_purged.py, values as published (rounded) in its README section \"Purged temporal robustness check\"; targeted_rows follows the documented top-10% rule"
+    },
+    {
+      "id": "purged_validation",
+      "protocol": "purged_temporal",
+      "split": "validation",
+      "evaluation_period": [
+        "1998-01-01",
+        "1998-06-01"
+      ],
+      "training_rows": 35823,
+      "last_training_snapshot": "1997-10-01",
+      "rows": 25830,
+      "positives": 737,
+      "roc_auc": 0.8991,
+      "pr_auc": 0.1868,
+      "targeted_fraction": 0.1,
+      "targeted_rows": 2583,
+      "positives_captured": 450,
+      "precision": 0.1742,
+      "recall": 0.6106,
+      "lift": 6.11,
+      "values_rounded": true,
+      "derived_fields": [
+        "targeted_rows"
+      ],
+      "source": "churn-reactivation-engine: src/evaluate_purged.py, values as published (rounded) in its README section \"Purged temporal robustness check\"; targeted_rows follows the documented top-10% rule"
+    }
+  ],
   "latest_snapshot": "1998-09-01",
   "latest_accounts": 4393,
   "high_risk_accounts": 440,
-  "profile": [
+  "months": [
+    {
+      "snapshot": "1998-07-01",
+      "accounts": 4391,
+      "high_risk": 440,
+      "observed_disengagement_rate": 0.018446823047141882
+    },
+    {
+      "snapshot": "1998-08-01",
+      "accounts": 4393,
+      "high_risk": 440,
+      "observed_disengagement_rate": 0.013430457546096062
+    },
+    {
+      "snapshot": "1998-09-01",
+      "accounts": 4393,
+      "high_risk": 440,
+      "observed_disengagement_rate": 0.013430457546096062
+    }
+  ],
+  "latest_snapshot_profile": [
     {
       "feature": "cash_withdrawals_90d",
       "high_risk_median": 9.0,
@@ -57,26 +176,6 @@
       "other_median": 3.0
     }
   ],
-  "months": [
-    {
-      "snapshot": "1998-07-01",
-      "accounts": 4391,
-      "high_risk": 440,
-      "observed_disengagement_rate": 0.018446823047141882
-    },
-    {
-      "snapshot": "1998-08-01",
-      "accounts": 4393,
-      "high_risk": 440,
-      "observed_disengagement_rate": 0.013430457546096062
-    },
-    {
-      "snapshot": "1998-09-01",
-      "accounts": 4393,
-      "high_risk": 440,
-      "observed_disengagement_rate": 0.013430457546096062
-    }
-  ],
   "target_definition": "Next-90-day customer activity at or below 60% of the same-snapshot median future/past activity ratio; eligible accounts have at least four previous-90-day customer-initiated transactions.",
   "limitations": [
     "Historical cohort research, not current customer or credit-risk predictions.",
@@ -84,5 +183,702 @@
     "The fixed model and top-10% policy were selected in the original research. This is reproduction, not fresh holdout discovery.",
     "Snapshot features precede each snapshot. A stricter purged temporal robustness check removed training observations whose 90-day outcome windows crossed into evaluation periods; the purged locked test retained ROC-AUC 0.9202 and top-10% lift 6.63x.",
     "Campaign economics are assumptions and do not establish intervention effectiveness."
-  ]
+  ],
+  "validation_analysis": {
+    "model_comparison": {
+      "protocol": "original",
+      "split": "validation",
+      "values_rounded": true,
+      "models": [
+        {
+          "model": "Logistic Regression",
+          "roc_auc": 0.8631,
+          "pr_auc": 0.1431,
+          "top10_precision": 0.1432,
+          "top10_lift": 5.02
+        },
+        {
+          "model": "Random Forest",
+          "roc_auc": 0.8997,
+          "pr_auc": 0.1805,
+          "top10_precision": 0.1595,
+          "top10_lift": 5.59
+        },
+        {
+          "model": "Gradient Boosting",
+          "roc_auc": 0.9106,
+          "pr_auc": 0.2159,
+          "top10_precision": 0.1769,
+          "top10_lift": 6.2
+        }
+      ],
+      "source": "churn-reactivation-engine: src/train_models.py, values as published (rounded) in its README section \"Models compared\""
+    },
+    "targeting_curve": {
+      "protocol": "original",
+      "split": "validation",
+      "points": [
+        {
+          "target_fraction": 0.01,
+          "targeted_rows": 259,
+          "score_threshold": 0.9070646650734688,
+          "precision": 0.32432432432432434,
+          "recall": 0.11397557666214382,
+          "lift": 11.366753456305695,
+          "positives_captured": 84
+        },
+        {
+          "target_fraction": 0.05,
+          "targeted_rows": 1292,
+          "score_threshold": 0.8351788073154032,
+          "precision": 0.23529411764705882,
+          "recall": 0.412483039348711,
+          "lift": 8.246468193790406,
+          "positives_captured": 304
+        },
+        {
+          "target_fraction": 0.1,
+          "targeted_rows": 2583,
+          "score_threshold": 0.7386753397512044,
+          "precision": 0.17692605497483546,
+          "recall": 0.6200814111261872,
+          "lift": 6.200814111261872,
+          "positives_captured": 457
+        },
+        {
+          "target_fraction": 0.15,
+          "targeted_rows": 3875,
+          "score_threshold": 0.6232741413190418,
+          "precision": 0.14580645161290323,
+          "recall": 0.7666214382632293,
+          "lift": 5.110150129119797,
+          "positives_captured": 565
+        },
+        {
+          "target_fraction": 0.2,
+          "targeted_rows": 5166,
+          "score_threshold": 0.4957600590042652,
+          "precision": 0.12117692605497483,
+          "recall": 0.8493894165535957,
+          "lift": 4.246947082767978,
+          "positives_captured": 626
+        },
+        {
+          "target_fraction": 0.25,
+          "targeted_rows": 6458,
+          "score_threshold": 0.36728125440092085,
+          "precision": 0.1028182099721276,
+          "recall": 0.9009497964721845,
+          "lift": 3.6035201676798585,
+          "positives_captured": 664
+        },
+        {
+          "target_fraction": 0.3,
+          "targeted_rows": 7749,
+          "score_threshold": 0.2657975617835355,
+          "precision": 0.0895599432184798,
+          "recall": 0.9416553595658074,
+          "lift": 3.138851198552691,
+          "positives_captured": 694
+        }
+      ],
+      "source": "churn-reactivation-engine: data/processed/validation_targeting_metrics.csv, written by src/evaluate_thresholds.py"
+    },
+    "feature_importance": {
+      "protocol": "original",
+      "split": "validation",
+      "metric": "average_precision_decrease",
+      "repeats": 3,
+      "rows": [
+        {
+          "feature": "cash_withdrawals_90d",
+          "importance_mean": 0.0746386967551449,
+          "importance_std": 0.008155144917383356
+        },
+        {
+          "feature": "outgoing_transfers_30d",
+          "importance_mean": 0.0623318303761311,
+          "importance_std": 0.0026252070785247254
+        },
+        {
+          "feature": "recency_days_prevprev30d",
+          "importance_mean": 0.021558888021792195,
+          "importance_std": 0.0013101568625439905
+        },
+        {
+          "feature": "unique_operations_90d",
+          "importance_mean": 0.015705298950514996,
+          "importance_std": 0.0024958414663197102
+        },
+        {
+          "feature": "customer_amount_90d",
+          "importance_mean": 0.013984179488906215,
+          "importance_std": 0.00539281936618544
+        },
+        {
+          "feature": "incoming_amount_30d",
+          "importance_mean": 0.013070702328092773,
+          "importance_std": 0.003291787153350029
+        },
+        {
+          "feature": "max_amount_90d",
+          "importance_mean": 0.009896095365964938,
+          "importance_std": 0.004026568390829106
+        },
+        {
+          "feature": "all_tx_count_90d",
+          "importance_mean": 0.008883587198127782,
+          "importance_std": 0.002826629351831305
+        },
+        {
+          "feature": "outgoing_amount_90d",
+          "importance_mean": 0.007942607576165911,
+          "importance_std": 0.00272339778183647
+        },
+        {
+          "feature": "cash_deposits_90d",
+          "importance_mean": 0.0072095066915670485,
+          "importance_std": 0.0010958886101851387
+        },
+        {
+          "feature": "cash_deposits_30d",
+          "importance_mean": 0.006835274189216266,
+          "importance_std": 0.0005627755112898982
+        },
+        {
+          "feature": "outgoing_count_90d",
+          "importance_mean": 0.006791092847975327,
+          "importance_std": 0.0027735574401033043
+        },
+        {
+          "feature": "max_balance_30d",
+          "importance_mean": 0.004891561854419533,
+          "importance_std": 0.0007152150120061049
+        },
+        {
+          "feature": "balance_change_30d",
+          "importance_mean": 0.004853777088771809,
+          "importance_std": 0.0036173618130790506
+        },
+        {
+          "feature": "account_age_days",
+          "importance_mean": 0.004677079691061986,
+          "importance_std": 0.0009716908795063871
+        },
+        {
+          "feature": "incoming_outgoing_ratio_90d",
+          "importance_mean": 0.0033539701921969276,
+          "importance_std": 0.003861072222301345
+        },
+        {
+          "feature": "has_loan",
+          "importance_mean": 0.0033357168203245746,
+          "importance_std": 0.001394211868157819
+        },
+        {
+          "feature": "incoming_amount_prevprev30d",
+          "importance_mean": 0.003301936645293463,
+          "importance_std": 0.0012768482666521697
+        },
+        {
+          "feature": "mean_amount_90d",
+          "importance_mean": 0.003221655152783979,
+          "importance_std": 0.0005752547645668964
+        },
+        {
+          "feature": "unique_operations_30d",
+          "importance_mean": 0.0030886804426414247,
+          "importance_std": 0.0017832063582359405
+        },
+        {
+          "feature": "unique_operations_prev30d",
+          "importance_mean": 0.0029269933888463515,
+          "importance_std": 0.0015479355627916298
+        },
+        {
+          "feature": "total_amount_90d",
+          "importance_mean": 0.0029111823670341006,
+          "importance_std": 0.0004000311079965823
+        },
+        {
+          "feature": "tx_count_recent_vs_90d_share",
+          "importance_mean": 0.0026120283983935566,
+          "importance_std": 0.00015133539055424856
+        },
+        {
+          "feature": "last_balance_90d",
+          "importance_mean": 0.0024912220068974513,
+          "importance_std": 0.001076203755034043
+        },
+        {
+          "feature": "min_balance_30d",
+          "importance_mean": 0.0024850869454950872,
+          "importance_std": 0.0004606070363555681
+        },
+        {
+          "feature": "max_balance_90d",
+          "importance_mean": 0.0020136309329847704,
+          "importance_std": 0.00029836984491733124
+        },
+        {
+          "feature": "min_balance_90d",
+          "importance_mean": 0.0019331904229221986,
+          "importance_std": 0.0016521876730518248
+        },
+        {
+          "feature": "mean_balance_90d",
+          "importance_mean": 0.0018544809709979033,
+          "importance_std": 0.0006472807220607876
+        },
+        {
+          "feature": "outgoing_amount_prev30d",
+          "importance_mean": 0.0018328518613096034,
+          "importance_std": 0.0005435584530992093
+        },
+        {
+          "feature": "max_amount_30d",
+          "importance_mean": 0.001500018622278378,
+          "importance_std": 0.00033935437042485387
+        },
+        {
+          "feature": "customer_amount_prev30d",
+          "importance_mean": 0.0014554912222946765,
+          "importance_std": 0.0010574127629242275
+        },
+        {
+          "feature": "outgoing_count_prevprev30d",
+          "importance_mean": 0.0013674418440923208,
+          "importance_std": 0.0006580886545175874
+        },
+        {
+          "feature": "loan_amount",
+          "importance_mean": 0.0012311954424184535,
+          "importance_std": 0.001121314575452438
+        },
+        {
+          "feature": "cash_withdrawals_prev30d",
+          "importance_mean": 0.001202814800484055,
+          "importance_std": 0.00016859620769012903
+        },
+        {
+          "feature": "all_tx_count_prevprev30d",
+          "importance_mean": 0.0010578531117825807,
+          "importance_std": 0.0003645860681755766
+        },
+        {
+          "feature": "tx_count_change_pct_30d",
+          "importance_mean": 0.0010106666093234369,
+          "importance_std": 7.972578543747882e-05
+        },
+        {
+          "feature": "outgoing_transfers_90d",
+          "importance_mean": 0.0010105899684019204,
+          "importance_std": 0.0006329365942026491
+        },
+        {
+          "feature": "loan_payment",
+          "importance_mean": 0.00100105277356477,
+          "importance_std": 0.0008666138249567845
+        },
+        {
+          "feature": "mean_amount_prev30d",
+          "importance_mean": 0.0009945782827400957,
+          "importance_std": 0.00018284937743344163
+        },
+        {
+          "feature": "active_days_30d",
+          "importance_mean": 0.000993241239633837,
+          "importance_std": 0.00024513434929375987
+        },
+        {
+          "feature": "incoming_count_30d",
+          "importance_mean": 0.0009617475452947943,
+          "importance_std": 0.0003915584366358925
+        },
+        {
+          "feature": "customer_amount_prevprev30d",
+          "importance_mean": 0.0009154363082901629,
+          "importance_std": 0.0002593668666462354
+        },
+        {
+          "feature": "amount_change_pct_30d",
+          "importance_mean": 0.0008194993266404845,
+          "importance_std": 0.000716591475669153
+        },
+        {
+          "feature": "frequency",
+          "importance_mean": 0.000768216487158598,
+          "importance_std": 0.0005682967541569202
+        },
+        {
+          "feature": "tx_count_change_30d",
+          "importance_mean": 0.0007316869258164512,
+          "importance_std": 0.00010101506878370582
+        },
+        {
+          "feature": "max_balance_prev30d",
+          "importance_mean": 0.00067227963966258,
+          "importance_std": 0.0005815143804740968
+        },
+        {
+          "feature": "mean_balance_30d",
+          "importance_mean": 0.0006627589385614641,
+          "importance_std": 0.0004410103396304865
+        },
+        {
+          "feature": "max_amount_prevprev30d",
+          "importance_mean": 0.0006156705448799038,
+          "importance_std": 0.00025887291122680896
+        },
+        {
+          "feature": "total_amount_prevprev30d",
+          "importance_mean": 0.0004923078392570038,
+          "importance_std": 0.00048070196902357025
+        },
+        {
+          "feature": "active_days_90d",
+          "importance_mean": 0.000487775034732361,
+          "importance_std": 0.00044280526290437167
+        },
+        {
+          "feature": "outgoing_count_prev30d",
+          "importance_mean": 0.0004564446719618198,
+          "importance_std": 0.00010485935007208728
+        },
+        {
+          "feature": "min_balance_prevprev30d",
+          "importance_mean": 0.0004109395958420044,
+          "importance_std": 0.0007553500635923672
+        },
+        {
+          "feature": "loan_duration_months",
+          "importance_mean": 0.00037925086026655935,
+          "importance_std": 0.00013854099028745383
+        },
+        {
+          "feature": "mean_balance_prev30d",
+          "importance_mean": 0.0003691801856983608,
+          "importance_std": 0.00010706459703126846
+        },
+        {
+          "feature": "card_withdrawals_30d",
+          "importance_mean": 0.00034440298927442453,
+          "importance_std": 0.00018651492972137452
+        },
+        {
+          "feature": "active_days_prevprev30d",
+          "importance_mean": 0.0003215928607497494,
+          "importance_std": 0.00048334392522797617
+        },
+        {
+          "feature": "incoming_amount_prev30d",
+          "importance_mean": 0.00031846774577704945,
+          "importance_std": 0.0018377743984867617
+        },
+        {
+          "feature": "outgoing_count_30d",
+          "importance_mean": 0.0003010546800899146,
+          "importance_std": 0.00040724305254073246
+        },
+        {
+          "feature": "cash_deposits_prev30d",
+          "importance_mean": 0.0002886069868597574,
+          "importance_std": 0.000738087485101316
+        },
+        {
+          "feature": "cash_deposits_prevprev30d",
+          "importance_mean": 0.0002831537622776474,
+          "importance_std": 6.110028281713643e-05
+        },
+        {
+          "feature": "total_amount_30d",
+          "importance_mean": 0.00025157008069468895,
+          "importance_std": 0.0003808891289247509
+        },
+        {
+          "feature": "last_balance_prevprev30d",
+          "importance_mean": 0.00023845715292959238,
+          "importance_std": 0.0002424081947922293
+        },
+        {
+          "feature": "incoming_amount_90d",
+          "importance_mean": 0.00017008843548478128,
+          "importance_std": 0.001145082787079388
+        },
+        {
+          "feature": "recency_days_prev30d",
+          "importance_mean": 0.000163429298222754,
+          "importance_std": 0.0008821816077903105
+        },
+        {
+          "feature": "mean_balance_prevprev30d",
+          "importance_mean": 0.00014942629670474292,
+          "importance_std": 0.00019033074618590305
+        },
+        {
+          "feature": "unique_operations_prevprev30d",
+          "importance_mean": 0.0001045331015112431,
+          "importance_std": 0.0009331833704276633
+        },
+        {
+          "feature": "max_balance_prevprev30d",
+          "importance_mean": 1.4219335077345999e-05,
+          "importance_std": 0.0008067305081644572
+        },
+        {
+          "feature": "failed_like_balance_pressure",
+          "importance_mean": 6.302685086168047e-06,
+          "importance_std": 1.2501743748825843e-06
+        },
+        {
+          "feature": "card_withdrawals_prevprev30d",
+          "importance_mean": 0.0,
+          "importance_std": 0.0
+        },
+        {
+          "feature": "all_tx_count_prev30d",
+          "importance_mean": 0.0,
+          "importance_std": 0.0
+        },
+        {
+          "feature": "last_balance_30d",
+          "importance_mean": 0.0,
+          "importance_std": 0.0
+        },
+        {
+          "feature": "recency_days_30d",
+          "importance_mean": 0.0,
+          "importance_std": 0.0
+        },
+        {
+          "feature": "card_withdrawals_prev30d",
+          "importance_mean": 0.0,
+          "importance_std": 0.0
+        },
+        {
+          "feature": "incoming_count_prev30d",
+          "importance_mean": -1.7522272461924688e-05,
+          "importance_std": 3.763264892954627e-05
+        },
+        {
+          "feature": "outgoing_transfers_prev30d",
+          "importance_mean": -4.3832298904644684e-05,
+          "importance_std": 1.173240939703387e-05
+        },
+        {
+          "feature": "latest_card_type",
+          "importance_mean": -5.8118871901898426e-05,
+          "importance_std": 2.905392389759748e-05
+        },
+        {
+          "feature": "card_withdrawals_90d",
+          "importance_mean": -8.492101018141758e-05,
+          "importance_std": 0.00014435914838861047
+        },
+        {
+          "feature": "incoming_count_90d",
+          "importance_mean": -0.00011485262853265048,
+          "importance_std": 0.001023792972815357
+        },
+        {
+          "feature": "last_balance_prev30d",
+          "importance_mean": -0.00011713353848853229,
+          "importance_std": 0.00029572755103146267
+        },
+        {
+          "feature": "all_tx_count_30d",
+          "importance_mean": -0.00012575697227964108,
+          "importance_std": 2.4866665989046272e-05
+        },
+        {
+          "feature": "total_amount_prev30d",
+          "importance_mean": -0.000136207323586481,
+          "importance_std": 0.0007294126774742154
+        },
+        {
+          "feature": "outgoing_transfers_prevprev30d",
+          "importance_mean": -0.00015195855150359114,
+          "importance_std": 1.910579117304273e-05
+        },
+        {
+          "feature": "mean_amount_prevprev30d",
+          "importance_mean": -0.00019166790587991459,
+          "importance_std": 0.00011293021586562593
+        },
+        {
+          "feature": "customer_tx_count_prevprev30d",
+          "importance_mean": -0.0002302100713599912,
+          "importance_std": 6.189521294925247e-05
+        },
+        {
+          "feature": "recency_days_90d",
+          "importance_mean": -0.0002651071194983978,
+          "importance_std": 4.448492342988523e-05
+        },
+        {
+          "feature": "mean_amount_30d",
+          "importance_mean": -0.0003058307245919027,
+          "importance_std": 0.0005358231868961711
+        },
+        {
+          "feature": "min_balance_prev30d",
+          "importance_mean": -0.0003323494491299465,
+          "importance_std": 0.0005140000778611296
+        },
+        {
+          "feature": "customer_tx_count_prev30d",
+          "importance_mean": -0.00034064677594497494,
+          "importance_std": 0.0006748764028124
+        },
+        {
+          "feature": "outgoing_amount_30d",
+          "importance_mean": -0.0004138860226084451,
+          "importance_std": 0.0005804942434208273
+        },
+        {
+          "feature": "active_days_prev30d",
+          "importance_mean": -0.00044751379330792984,
+          "importance_std": 0.00022516942722874636
+        },
+        {
+          "feature": "district_id",
+          "importance_mean": -0.00045545039106188273,
+          "importance_std": 0.0003168670197138209
+        },
+        {
+          "feature": "customer_amount_30d",
+          "importance_mean": -0.0005443261360705091,
+          "importance_std": 0.00033717123491511583
+        },
+        {
+          "feature": "cash_withdrawals_prevprev30d",
+          "importance_mean": -0.0005800465899819899,
+          "importance_std": 0.0004495006454161114
+        },
+        {
+          "feature": "has_card",
+          "importance_mean": -0.0006025120441980799,
+          "importance_std": 0.0001982502317366207
+        },
+        {
+          "feature": "max_amount_prev30d",
+          "importance_mean": -0.0006903972731770736,
+          "importance_std": 0.0007626208099055065
+        },
+        {
+          "feature": "customer_tx_count_90d",
+          "importance_mean": -0.0007119098110972185,
+          "importance_std": 0.0016866207326844723
+        },
+        {
+          "feature": "customer_tx_count_30d",
+          "importance_mean": -0.0007776361814665622,
+          "importance_std": 0.0001809800797702163
+        },
+        {
+          "feature": "cash_withdrawals_30d",
+          "importance_mean": -0.0013577539561411278,
+          "importance_std": 0.0008481327950853134
+        },
+        {
+          "feature": "incoming_count_prevprev30d",
+          "importance_mean": -0.001919919705821634,
+          "importance_std": 0.0006728598466246685
+        },
+        {
+          "feature": "outgoing_amount_prevprev30d",
+          "importance_mean": -0.0022589796418814867,
+          "importance_std": 0.00027271601543422307
+        }
+      ],
+      "source": "churn-reactivation-engine: data/processed/validation_feature_importance.csv, written by src/analyze_feature_importance.py"
+    },
+    "risk_segment_profile": {
+      "protocol": "original",
+      "split": "validation",
+      "rows": [
+        {
+          "feature": "cash_withdrawals_90d",
+          "high_risk_median": 12.0,
+          "other_median": 8.0,
+          "high_risk_mean": 11.719705768486257,
+          "other_mean": 8.499634361422979,
+          "standardized_mean_diff": 0.875466122671717
+        },
+        {
+          "feature": "unique_operations_90d",
+          "high_risk_median": 2.0,
+          "other_median": 3.0,
+          "high_risk_mean": 2.1455671699574137,
+          "other_mean": 2.5966791413945884,
+          "standardized_mean_diff": -0.7057019455195127
+        },
+        {
+          "feature": "customer_amount_90d",
+          "high_risk_median": 28393.8,
+          "other_median": 79085.8,
+          "high_risk_mean": 145052.3454123113,
+          "other_mean": 89368.51392867898,
+          "standardized_mean_diff": 0.6040784866571066
+        },
+        {
+          "feature": "outgoing_transfers_30d",
+          "high_risk_median": 1.0,
+          "other_median": 1.0,
+          "high_risk_mean": 0.7231900890437476,
+          "other_mean": 1.3507979524239686,
+          "standardized_mean_diff": -0.582658958565203
+        },
+        {
+          "feature": "balance_change_30d",
+          "high_risk_median": -2543.9000000000015,
+          "other_median": 1095.0,
+          "high_risk_mean": -5369.525396825397,
+          "other_mean": 848.7009850733426,
+          "standardized_mean_diff": -0.4725463410330729
+        },
+        {
+          "feature": "all_tx_count_90d",
+          "high_risk_median": 21.0,
+          "other_median": 19.0,
+          "high_risk_mean": 21.300038714672862,
+          "other_mean": 19.689637372564203,
+          "standardized_mean_diff": 0.2999034286991861
+        },
+        {
+          "feature": "cash_deposits_90d",
+          "high_risk_median": 0.0,
+          "other_median": 3.0,
+          "high_risk_mean": 2.3464963221060784,
+          "other_mean": 2.602744440142814,
+          "standardized_mean_diff": -0.11571225440241326
+        },
+        {
+          "feature": "incoming_amount_30d",
+          "high_risk_median": 5427.2,
+          "other_median": 13808.8,
+          "high_risk_mean": 20291.20952380952,
+          "other_mean": 18025.77049081602,
+          "standardized_mean_diff": 0.11196970449520363
+        },
+        {
+          "feature": "account_age_days",
+          "high_risk_median": 887.0,
+          "other_median": 834.0,
+          "high_risk_mean": 1014.2551296941541,
+          "other_mean": 967.8814470684389,
+          "standardized_mean_diff": 0.08474750770140226
+        },
+        {
+          "feature": "recency_days_prevprev30d",
+          "high_risk_median": 63.0,
+          "other_median": 62.0,
+          "high_risk_mean": 65.27719705768486,
+          "other_mean": 70.189228717684,
+          "standardized_mean_diff": -0.0718966520291939
+        }
+      ],
+      "source": "churn-reactivation-engine: data/processed/validation_risk_segment_profile.csv, written by src/profile_risk_segments.py"
+    }
+  }
 }

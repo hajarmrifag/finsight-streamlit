@@ -1,0 +1,793 @@
+{
+  "$defs": {
+    "Evaluation": {
+      "additionalProperties": false,
+      "description": "One model evaluation. `id` states the protocol and split so results cannot be mixed up.",
+      "properties": {
+        "derived_fields": {
+          "default": [],
+          "items": {
+            "const": "targeted_rows",
+            "type": "string"
+          },
+          "title": "Derived Fields",
+          "type": "array"
+        },
+        "evaluation_period": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "format": "date",
+              "type": "string"
+            }
+          ],
+          "title": "Evaluation Period",
+          "type": "array"
+        },
+        "id": {
+          "enum": [
+            "original_test",
+            "purged_test",
+            "purged_validation"
+          ],
+          "title": "Id",
+          "type": "string"
+        },
+        "last_training_snapshot": {
+          "format": "date",
+          "title": "Last Training Snapshot",
+          "type": "string"
+        },
+        "lift": {
+          "exclusiveMinimum": 0,
+          "title": "Lift",
+          "type": "number"
+        },
+        "positives": {
+          "minimum": 0,
+          "title": "Positives",
+          "type": "integer"
+        },
+        "positives_captured": {
+          "minimum": 0,
+          "title": "Positives Captured",
+          "type": "integer"
+        },
+        "pr_auc": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Pr Auc",
+          "type": "number"
+        },
+        "precision": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Precision",
+          "type": "number"
+        },
+        "protocol": {
+          "enum": [
+            "original",
+            "purged_temporal"
+          ],
+          "title": "Protocol",
+          "type": "string"
+        },
+        "recall": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Recall",
+          "type": "number"
+        },
+        "roc_auc": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Roc Auc",
+          "type": "number"
+        },
+        "rows": {
+          "exclusiveMinimum": 0,
+          "title": "Rows",
+          "type": "integer"
+        },
+        "source": {
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "split": {
+          "enum": [
+            "validation",
+            "test"
+          ],
+          "title": "Split",
+          "type": "string"
+        },
+        "targeted_fraction": {
+          "const": 0.1,
+          "title": "Targeted Fraction",
+          "type": "number"
+        },
+        "targeted_rows": {
+          "exclusiveMinimum": 0,
+          "title": "Targeted Rows",
+          "type": "integer"
+        },
+        "training_rows": {
+          "exclusiveMinimum": 0,
+          "title": "Training Rows",
+          "type": "integer"
+        },
+        "values_rounded": {
+          "title": "Values Rounded",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "protocol",
+        "split",
+        "evaluation_period",
+        "training_rows",
+        "last_training_snapshot",
+        "rows",
+        "positives",
+        "roc_auc",
+        "pr_auc",
+        "targeted_fraction",
+        "targeted_rows",
+        "positives_captured",
+        "precision",
+        "recall",
+        "lift",
+        "values_rounded",
+        "source"
+      ],
+      "title": "Evaluation",
+      "type": "object"
+    },
+    "FeatureImportance": {
+      "additionalProperties": false,
+      "description": "Permutation importance: the drop in validation average precision when a feature is shuffled.",
+      "properties": {
+        "metric": {
+          "const": "average_precision_decrease",
+          "title": "Metric",
+          "type": "string"
+        },
+        "protocol": {
+          "const": "original",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "repeats": {
+          "exclusiveMinimum": 0,
+          "title": "Repeats",
+          "type": "integer"
+        },
+        "rows": {
+          "items": {
+            "$ref": "#/$defs/FeatureImportanceRow"
+          },
+          "minItems": 1,
+          "title": "Rows",
+          "type": "array"
+        },
+        "source": {
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "split": {
+          "const": "validation",
+          "title": "Split",
+          "type": "string"
+        }
+      },
+      "required": [
+        "protocol",
+        "split",
+        "metric",
+        "repeats",
+        "rows",
+        "source"
+      ],
+      "title": "FeatureImportance",
+      "type": "object"
+    },
+    "FeatureImportanceRow": {
+      "additionalProperties": false,
+      "properties": {
+        "feature": {
+          "minLength": 1,
+          "title": "Feature",
+          "type": "string"
+        },
+        "importance_mean": {
+          "title": "Importance Mean",
+          "type": "number"
+        },
+        "importance_std": {
+          "minimum": 0,
+          "title": "Importance Std",
+          "type": "number"
+        }
+      },
+      "required": [
+        "feature",
+        "importance_mean",
+        "importance_std"
+      ],
+      "title": "FeatureImportanceRow",
+      "type": "object"
+    },
+    "ModelComparison": {
+      "additionalProperties": false,
+      "description": "Candidate models scored on the validation split. Rounded as published in the research README.",
+      "properties": {
+        "models": {
+          "items": {
+            "$ref": "#/$defs/ModelScore"
+          },
+          "minItems": 2,
+          "title": "Models",
+          "type": "array"
+        },
+        "protocol": {
+          "const": "original",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "source": {
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "split": {
+          "const": "validation",
+          "title": "Split",
+          "type": "string"
+        },
+        "values_rounded": {
+          "const": true,
+          "title": "Values Rounded",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "protocol",
+        "split",
+        "values_rounded",
+        "models",
+        "source"
+      ],
+      "title": "ModelComparison",
+      "type": "object"
+    },
+    "ModelScore": {
+      "additionalProperties": false,
+      "properties": {
+        "model": {
+          "enum": [
+            "Logistic Regression",
+            "Random Forest",
+            "Gradient Boosting"
+          ],
+          "title": "Model",
+          "type": "string"
+        },
+        "pr_auc": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Pr Auc",
+          "type": "number"
+        },
+        "roc_auc": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Roc Auc",
+          "type": "number"
+        },
+        "top10_lift": {
+          "exclusiveMinimum": 0,
+          "title": "Top10 Lift",
+          "type": "number"
+        },
+        "top10_precision": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Top10 Precision",
+          "type": "number"
+        }
+      },
+      "required": [
+        "model",
+        "roc_auc",
+        "pr_auc",
+        "top10_precision",
+        "top10_lift"
+      ],
+      "title": "ModelScore",
+      "type": "object"
+    },
+    "Month": {
+      "additionalProperties": false,
+      "properties": {
+        "accounts": {
+          "exclusiveMinimum": 0,
+          "title": "Accounts",
+          "type": "integer"
+        },
+        "high_risk": {
+          "exclusiveMinimum": 0,
+          "title": "High Risk",
+          "type": "integer"
+        },
+        "observed_disengagement_rate": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Observed Disengagement Rate",
+          "type": "number"
+        },
+        "snapshot": {
+          "format": "date",
+          "title": "Snapshot",
+          "type": "string"
+        }
+      },
+      "required": [
+        "snapshot",
+        "accounts",
+        "high_risk",
+        "observed_disengagement_rate"
+      ],
+      "title": "Month",
+      "type": "object"
+    },
+    "ProfileRow": {
+      "additionalProperties": false,
+      "properties": {
+        "feature": {
+          "minLength": 1,
+          "title": "Feature",
+          "type": "string"
+        },
+        "high_risk_median": {
+          "title": "High Risk Median",
+          "type": "number"
+        },
+        "other_median": {
+          "title": "Other Median",
+          "type": "number"
+        }
+      },
+      "required": [
+        "feature",
+        "high_risk_median",
+        "other_median"
+      ],
+      "title": "ProfileRow",
+      "type": "object"
+    },
+    "RiskSegmentProfile": {
+      "additionalProperties": false,
+      "description": "Top-10% risk group against the other 90% on the validation split. Associations only.",
+      "properties": {
+        "protocol": {
+          "const": "original",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "rows": {
+          "items": {
+            "$ref": "#/$defs/SegmentProfileRow"
+          },
+          "minItems": 1,
+          "title": "Rows",
+          "type": "array"
+        },
+        "source": {
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "split": {
+          "const": "validation",
+          "title": "Split",
+          "type": "string"
+        }
+      },
+      "required": [
+        "protocol",
+        "split",
+        "rows",
+        "source"
+      ],
+      "title": "RiskSegmentProfile",
+      "type": "object"
+    },
+    "SegmentProfileRow": {
+      "additionalProperties": false,
+      "properties": {
+        "feature": {
+          "minLength": 1,
+          "title": "Feature",
+          "type": "string"
+        },
+        "high_risk_mean": {
+          "title": "High Risk Mean",
+          "type": "number"
+        },
+        "high_risk_median": {
+          "title": "High Risk Median",
+          "type": "number"
+        },
+        "other_mean": {
+          "title": "Other Mean",
+          "type": "number"
+        },
+        "other_median": {
+          "title": "Other Median",
+          "type": "number"
+        },
+        "standardized_mean_diff": {
+          "title": "Standardized Mean Diff",
+          "type": "number"
+        }
+      },
+      "required": [
+        "feature",
+        "high_risk_median",
+        "other_median",
+        "high_risk_mean",
+        "other_mean",
+        "standardized_mean_diff"
+      ],
+      "title": "SegmentProfileRow",
+      "type": "object"
+    },
+    "Split": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "train",
+            "validation",
+            "test"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "period": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "format": "date",
+              "type": "string"
+            }
+          ],
+          "title": "Period",
+          "type": "array"
+        },
+        "positives": {
+          "minimum": 0,
+          "title": "Positives",
+          "type": "integer"
+        },
+        "rows": {
+          "exclusiveMinimum": 0,
+          "title": "Rows",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "period",
+        "rows",
+        "positives"
+      ],
+      "title": "Split",
+      "type": "object"
+    },
+    "TargetingCurve": {
+      "additionalProperties": false,
+      "description": "Precision, recall and lift at several targeting depths, on the validation split only.",
+      "properties": {
+        "points": {
+          "items": {
+            "$ref": "#/$defs/TargetingPoint"
+          },
+          "minItems": 2,
+          "title": "Points",
+          "type": "array"
+        },
+        "protocol": {
+          "const": "original",
+          "title": "Protocol",
+          "type": "string"
+        },
+        "source": {
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "split": {
+          "const": "validation",
+          "title": "Split",
+          "type": "string"
+        }
+      },
+      "required": [
+        "protocol",
+        "split",
+        "points",
+        "source"
+      ],
+      "title": "TargetingCurve",
+      "type": "object"
+    },
+    "TargetingPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "lift": {
+          "exclusiveMinimum": 0,
+          "title": "Lift",
+          "type": "number"
+        },
+        "positives_captured": {
+          "minimum": 0,
+          "title": "Positives Captured",
+          "type": "integer"
+        },
+        "precision": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Precision",
+          "type": "number"
+        },
+        "recall": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Recall",
+          "type": "number"
+        },
+        "score_threshold": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score Threshold",
+          "type": "number"
+        },
+        "target_fraction": {
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "title": "Target Fraction",
+          "type": "number"
+        },
+        "targeted_rows": {
+          "exclusiveMinimum": 0,
+          "title": "Targeted Rows",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "target_fraction",
+        "targeted_rows",
+        "score_threshold",
+        "precision",
+        "recall",
+        "lift",
+        "positives_captured"
+      ],
+      "title": "TargetingPoint",
+      "type": "object"
+    },
+    "ValidationAnalysis": {
+      "additionalProperties": false,
+      "description": "Research outputs from the validation split. These are never test-set results.",
+      "properties": {
+        "feature_importance": {
+          "$ref": "#/$defs/FeatureImportance"
+        },
+        "model_comparison": {
+          "$ref": "#/$defs/ModelComparison"
+        },
+        "risk_segment_profile": {
+          "$ref": "#/$defs/RiskSegmentProfile"
+        },
+        "targeting_curve": {
+          "$ref": "#/$defs/TargetingCurve"
+        }
+      },
+      "required": [
+        "targeting_curve",
+        "feature_importance",
+        "risk_segment_profile",
+        "model_comparison"
+      ],
+      "title": "ValidationAnalysis",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "dataset": {
+      "title": "Dataset",
+      "type": "string"
+    },
+    "dataset_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Dataset Sha256",
+      "type": "string"
+    },
+    "development_period": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "format": "date",
+          "type": "string"
+        }
+      ],
+      "title": "Development Period",
+      "type": "array"
+    },
+    "evaluations": {
+      "items": {
+        "$ref": "#/$defs/Evaluation"
+      },
+      "title": "Evaluations",
+      "type": "array"
+    },
+    "feature_count": {
+      "exclusiveMinimum": 0,
+      "title": "Feature Count",
+      "type": "integer"
+    },
+    "high_risk_accounts": {
+      "exclusiveMinimum": 0,
+      "title": "High Risk Accounts",
+      "type": "integer"
+    },
+    "latest_accounts": {
+      "exclusiveMinimum": 0,
+      "title": "Latest Accounts",
+      "type": "integer"
+    },
+    "latest_snapshot": {
+      "format": "date",
+      "title": "Latest Snapshot",
+      "type": "string"
+    },
+    "latest_snapshot_profile": {
+      "items": {
+        "$ref": "#/$defs/ProfileRow"
+      },
+      "minItems": 1,
+      "title": "Latest Snapshot Profile",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "model": {
+      "title": "Model",
+      "type": "string"
+    },
+    "model_status": {
+      "const": "trained",
+      "title": "Model Status",
+      "type": "string"
+    },
+    "months": {
+      "items": {
+        "$ref": "#/$defs/Month"
+      },
+      "minItems": 1,
+      "title": "Months",
+      "type": "array"
+    },
+    "protocols": {
+      "additionalProperties": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "propertyNames": {
+        "enum": [
+          "original",
+          "purged_temporal"
+        ]
+      },
+      "title": "Protocols",
+      "type": "object"
+    },
+    "research_origin": {
+      "title": "Research Origin",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 2,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "source_url": {
+      "pattern": "^https://",
+      "title": "Source Url",
+      "type": "string"
+    },
+    "splits": {
+      "items": {
+        "$ref": "#/$defs/Split"
+      },
+      "title": "Splits",
+      "type": "array"
+    },
+    "target_definition": {
+      "minLength": 1,
+      "title": "Target Definition",
+      "type": "string"
+    },
+    "test_period": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "format": "date",
+          "type": "string"
+        }
+      ],
+      "title": "Test Period",
+      "type": "array"
+    },
+    "validation_analysis": {
+      "$ref": "#/$defs/ValidationAnalysis"
+    }
+  },
+  "required": [
+    "schema_version",
+    "model",
+    "model_status",
+    "dataset",
+    "source_url",
+    "dataset_sha256",
+    "research_origin",
+    "feature_count",
+    "development_period",
+    "test_period",
+    "protocols",
+    "splits",
+    "evaluations",
+    "latest_snapshot",
+    "latest_accounts",
+    "high_risk_accounts",
+    "months",
+    "latest_snapshot_profile",
+    "target_definition",
+    "limitations",
+    "validation_analysis"
+  ],
+  "title": "Research",
+  "type": "object"
+}
